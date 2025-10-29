@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nóminas Brutales</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <h1>Nóminas Brutales</h1>
+      </div>
+      <nav class="topbar-actions">
+        <button id="refreshDashboard" class="ghost">Refrescar tableros</button>
+        <a class="ghost" href="#empleados">Equipo</a>
+        <a class="ghost" href="#nominas">Nóminas</a>
+        <button id="openGuide" class="ghost">¿Cómo empiezo?</button>
+      </nav>
+    </header>
+
+    <main class="layout">
+      <section class="panel" id="dashboard">
+        <div class="panel-header">
+          <div>
+            <h2>Inteligencia Operativa</h2>
+            <p>Todo lo que importa de tu nómina, en una sola pantalla.</p>
+          </div>
+          <span class="badge" id="timezoneLabel"></span>
+        </div>
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="latest-entries">
+          <h3>Últimos movimientos</h3>
+          <ul id="latestEntries"></ul>
+        </div>
+      </section>
+
+      <section class="panel" id="empleados">
+        <div class="panel-header">
+          <div>
+            <h2>Gestión de talento</h2>
+            <p>Registra a tus colaboradores con salarios, puestos y cuentas bancarias.</p>
+          </div>
+          <button id="toggleEmployeeForm">Nuevo colaborador</button>
+        </div>
+        <form id="employeeForm" class="stack hidden">
+          <div class="grid">
+            <label>
+              Nombre completo
+              <input name="name" type="text" required placeholder="Ada Lovelace" />
+            </label>
+            <label>
+              Email corporativo
+              <input name="email" type="email" placeholder="ada@empresa.com" />
+            </label>
+            <label>
+              Puesto
+              <input name="role" type="text" placeholder="CTO" />
+            </label>
+            <label>
+              Departamento
+              <input name="department" type="text" placeholder="Tecnología" />
+            </label>
+            <label>
+              Salario mensual
+              <input name="salary" type="number" step="0.01" min="0" required placeholder="85000" />
+            </label>
+            <label>
+              Fecha de ingreso
+              <input name="hireDate" type="date" />
+            </label>
+            <label>
+              Banco
+              <input name="bankName" type="text" placeholder="BBVA" />
+            </label>
+            <label>
+              Cuenta o CLABE
+              <input name="bankAccount" type="text" placeholder="000000000000000000" />
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit">Guardar colaborador</button>
+            <button type="button" class="ghost" id="cancelEmployee">Cancelar</button>
+          </div>
+        </form>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Colaborador</th>
+                <th>Puesto</th>
+                <th>Departamento</th>
+                <th>Salario</th>
+                <th>Banco</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="employeeTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="nominas">
+        <div class="panel-header">
+          <div>
+            <h2>Motor de nóminas</h2>
+            <p>Genera ciclos brutales, ajusta percepciones y cierra sin miedo.</p>
+          </div>
+          <button id="toggleCycleForm">Nuevo ciclo</button>
+        </div>
+        <form id="cycleForm" class="stack hidden">
+          <div class="grid">
+            <label>
+              Nombre del ciclo
+              <input name="name" type="text" placeholder="Nómina Agosto 2025" />
+            </label>
+            <label>
+              Fecha inicio
+              <input name="periodStart" type="date" required />
+            </label>
+            <label>
+              Fecha fin
+              <input name="periodEnd" type="date" required />
+            </label>
+            <label>
+              Frecuencia
+              <select name="frequency">
+                <option value="monthly">Mensual</option>
+                <option value="semimonthly">Quincenal</option>
+                <option value="biweekly">Bisemanal</option>
+                <option value="weekly">Semanal</option>
+              </select>
+            </label>
+            <label>
+              Moneda
+              <input name="currency" type="text" value="MXN" />
+            </label>
+            <label>
+              % de impuestos
+              <input name="taxRate" type="number" step="0.01" min="0" max="1" value="0.12" />
+            </label>
+            <label>
+              % prestaciones
+              <input name="benefitsRate" type="number" step="0.01" min="0" max="1" value="0.04" />
+            </label>
+            <label>
+              % cargas patronales
+              <input name="employerContributionRate" type="number" step="0.01" min="0" max="1" value="0.02" />
+            </label>
+            <label class="full">
+              Notas internas
+              <textarea name="notes" rows="2" placeholder="Incluye bono extraordinario para ventas"></textarea>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button type="submit">Generar nómina</button>
+            <button type="button" class="ghost" id="cancelCycle">Cancelar</button>
+          </div>
+        </form>
+
+        <div class="cycle-grid" id="cycleGrid"></div>
+
+        <section class="panel subpanel hidden" id="cycleDetails">
+          <div class="panel-header">
+            <div>
+              <h3 id="cycleDetailsTitle">Detalle de nómina</h3>
+              <p id="cycleDetailsMeta"></p>
+            </div>
+            <button id="closeCycleDetails" class="ghost">Cerrar</button>
+          </div>
+          <div class="table-wrapper">
+            <table class="compact">
+              <thead>
+                <tr>
+                  <th>Colaborador</th>
+                  <th>Base</th>
+                  <th>Horas extra</th>
+                  <th>Pago extra</th>
+                  <th>Bonos</th>
+                  <th>Prestaciones</th>
+                  <th>Deducciones</th>
+                  <th>Impuestos</th>
+                  <th>Neto</th>
+                  <th>Costo total</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="entriesTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div id="quickstartBackdrop" class="quickstart-backdrop hidden" aria-hidden="true"></div>
+    <aside
+      id="quickstartPanel"
+      class="quickstart hidden"
+      role="dialog"
+      aria-labelledby="quickstartTitle"
+      aria-modal="true"
+      aria-hidden="true"
+      tabindex="-1"
+    >
+      <header>
+        <h2 id="quickstartTitle">Guía rápida para romperla</h2>
+        <button id="closeGuide" class="ghost" aria-label="Cerrar guía">Cerrar</button>
+      </header>
+      <ol>
+        <li><strong>Carga datos demo</strong> con <code>npm run seed</code> o agrega a tu primer colaborador.</li>
+        <li><strong>Genera una nómina</strong> desde el botón <em>Nuevo ciclo</em> y elige fechas/frecuencia.</li>
+        <li><strong>Ajusta percepciones</strong> en la tabla editable: bonos, deducciones, horas extra.</li>
+        <li><strong>Cierra el ciclo</strong> para bloquear ediciones y registrar la fecha de pago.</li>
+        <li><strong>Monitorea indicadores</strong> en el tablero de Inteligencia Operativa.</li>
+      </ol>
+      <p class="muted">Tip: puedes volver a abrir esta guía desde el botón “¿Cómo empiezo?” cuando quieras.</p>
+      <footer>
+        <button id="ackGuide" class="primary">¡Listo, manos a la obra!</button>
+      </footer>
+    </aside>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <template id="entryRowTemplate">
+      <tr>
+        <td>
+          <div class="employee-card">
+            <strong data-field="employee_name"></strong>
+            <small data-field="employee_role"></small>
+          </div>
+        </td>
+        <td>
+          <span class="figure" data-field="base_salary"></span>
+          <small class="muted" data-field="employee_department"></small>
+        </td>
+        <td class="input-group">
+          <input type="number" step="0.5" min="0" data-input="overtime_hours" />
+          <input type="number" step="0.01" min="0" data-input="overtime_rate" />
+        </td>
+        <td><span class="figure" data-field="overtime_pay"></span></td>
+        <td class="input-group"><input type="number" step="0.01" data-input="bonuses" /></td>
+        <td class="input-group"><input type="number" step="0.01" data-input="benefits" /></td>
+        <td class="input-group"><input type="number" step="0.01" data-input="deductions" /></td>
+        <td class="input-group">
+          <input type="number" step="0.01" min="0" max="1" data-input="tax_rate" />
+          <input type="number" step="0.01" min="0" max="1" data-input="employer_contribution_rate" />
+        </td>
+        <td><span class="figure" data-field="net_pay"></span></td>
+        <td><span class="figure" data-field="employer_cost"></span></td>
+        <td>
+          <button class="small" data-action="save">Guardar</button>
+        </td>
+      </tr>
+    </template>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
